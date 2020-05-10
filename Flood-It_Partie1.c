@@ -87,8 +87,7 @@ printf("Veuillez choisir la methode de parcours:\nPour la version recursive tape
 	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",sequence_aleatoire_rec_imp(M, G, dim, nbcl, 1));
   }
   if(choix == 3){
-		S_Zsg * Z=init_Zsg(dim,nbcl);
-		printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",strequence_aleatoire_rapide(M,G,Z));
+		printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",strequence_aleatoire_rapide(M, G, dim, nbcl, 1));
 	}
 
   temps_final = clock ();

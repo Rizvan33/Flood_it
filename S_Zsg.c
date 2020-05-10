@@ -1,6 +1,7 @@
 #include<stdlib.h>
 #include <stdio.h>
 #include "S_Zsg.h"
+
 S_Zsg * init_Zsg(int dim,int nbcl){
 	S_Zsg * Z=(S_Zsg*)malloc(sizeof(S_Zsg));
 	Z->dim=dim;
@@ -19,6 +20,22 @@ S_Zsg * init_Zsg(int dim,int nbcl){
 		}
 	}
 	return Z;
+}
+void detruit_Zsg (S_Zsg * Z){
+  detruit_liste(&(Z->Lzsg));
+  free(Z->Lzsg);
+  int i;
+  for (i=0; i<Z->nbcl ; i++){
+    detruit_liste(&(Z->B[i]));
+    free(Z->B[i]);
+  }
+  free(Z->B);
+
+  for (i=0; i<Z->dim ; i++){
+    free(Z->App[i]);
+  }
+  free(Z->App);
+  free(Z);
 }
 void ajoute_Zsg(S_Zsg * Z,int i,int j){
 	if(Z==NULL){
@@ -72,43 +89,49 @@ int agrandit_Zsg(int **M, S_Zsg * Z, int cl, int k, int l){
 	return cpt;	
 }
 
-int fini(int dim,int **App){
-	int i,j;
-	for (i=dim-1;i>=0;i--){
-		for (j=dim-1;j>0;j--){
-			if(App[i][j]!=-1){
-				return 0;
-			}
-		}
-	}
+int strequence_aleatoire_rapide (int **M, Grille *G, int dim, int nbcl, int aff){
+  if(G->nbcl<2){
 	return 1;
-}
+  }
+  int t = 0;
+  int cpt=0;
+  int cl = 0;
+  int i;
+  int j;
 
-int strequence_aleatoire_rapide(int ** M, Grille *G,S_Zsg * Z){
-	if(G->nbcl<2){
-		return 1;
-	}
-	if (fini(Z->dim,Z->App)){ 
-		return 0;
-	}
-	int i,cpt;
-	for(i=0;i<Z->nbcl;i++)init_liste(&(Z->B[i]));
-	agrandit_Zsg(M,Z,M[0][0],0,0);
-	int choix_couleur = rand()%(Z->nbcl);
-	while (Z->B[choix_couleur]==NULL){ 
-		choix_couleur= rand()%(Z->nbcl);
-	}
-	while(Z->Lzsg){
-		M[Z->Lzsg->i][Z->Lzsg->j] = choix_couleur;
-		Grille_attribue_couleur_case(G, Z->Lzsg->i, Z->Lzsg->j, M[Z->Lzsg->i][Z->Lzsg->j]);
-		Z->Lzsg = Z->Lzsg->suiv;
-	}
-	Grille_redessine_Grille(G);
-	while(Z->B[M[0][0]])	{	
-		int k,l;
-		enleve_en_tete(&(Z->B[M[0][0]]), &k, &l);
-		agrandit_Zsg(M,Z,choix_couleur,k,l);
-	}
-	return 1 + strequence_aleatoire_rapide(M,G,Z);
+  S_Zsg * Z = init_Zsg(dim, nbcl);
+  t = t + agrandit_Zsg( M, Z, M[0][0], 0, 0);
+  while(t<(dim*dim)){
+    cl=rand()%(nbcl);
+    if (cl!=M[0][0]){
+      cpt++;
+      ListeCase tmp = Z->Lzsg;
+
+      while(Z->Lzsg){
+        M[Z->Lzsg->i][Z->Lzsg->j]=cl;
+        Z->Lzsg=Z->Lzsg->suiv;
+      }
+
+      Z->Lzsg = Z->B[cl];
+      while(Z->Lzsg){
+        t = t + agrandit_Zsg(M , Z, cl, Z->Lzsg->i, Z->Lzsg->j);
+        Z->Lzsg=Z->Lzsg->suiv;
+      }
+      detruit_liste(&(Z->B[cl]));
+      Z->B[cl]=NULL;
+      detruit_liste(&Z->Lzsg);
+
+      if (aff==1){  
+        for (i=0;i<dim;i++){
+          for (j=0;j<dim;j++){
+            Grille_attribue_couleur_case(G,i,j,M[i][j]);
+          }
+        }
+        Grille_redessine_Grille(G);
+      }
+    }
+  }
+  detruit_Zsg (Z);
+  return cpt;
 }
 

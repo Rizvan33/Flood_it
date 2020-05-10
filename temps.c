@@ -22,7 +22,7 @@ void simulation_jeu(int dim, int nbcl, int nivdif, int graine, int aff, int mode
 	for (i=0;i<dim;i++){
 		M[i]=(int*) malloc(sizeof(int)*dim);
 		if (M[i]==0) 
-			printf("Pas assez d'espace mémoire disponible\n");
+			printf("Pas assez d'espace memoire disponible\n");
 	}
 
 	Gene_instance_genere_matrice(dim, nbcl, nivdif, graine, M);
@@ -41,20 +41,19 @@ void simulation_jeu(int dim, int nbcl, int nivdif, int graine, int aff, int mode
 	
 	if(mode==1){
 		temps_initial=clock();
-		sequence_aleatoire_rec(M, G,dim,G->nbcl,1);
+		sequence_aleatoire_rec(M, G, dim, nbcl, aff);
 		temps_final=clock();
 	}
 	else if(mode==2){
 		temps_initial=clock();
-		sequence_aleatoire_rec_imp(M, G,dim,G->nbcl,1);
+		sequence_aleatoire_rec_imp(M, G, dim, nbcl, aff);
 		temps_final=clock();
 	}
-	else if(mode==3){
+	/*else if(mode==3){
 		temps_initial=clock();
-		S_Zsg * Z=init_Zsg(dim,nbcl);
-		strequence_aleatoire_rapide(M,G,Z);
+		strequence_aleatoire_rapide(M, G, dim, nbcl, aff);
 		temps_final=clock();
-	}
+	}*/
 			
 	*temps_cpu=temps_final-temps_initial;
 
@@ -70,7 +69,7 @@ void test_dimension(int n){
 
 	FILE *f1=fopen("dimrec.txt","w");
 	FILE *f2=fopen("dimimp.txt","w");
-	FILE *f3=fopen("dimzsg.txt","w");
+	/*FILE *f3=fopen("dimzsg.txt","w");*/
 	
 	int i;
 	
@@ -82,21 +81,51 @@ void test_dimension(int n){
 		fprintf(f1,"%d %f\n",i,*temps_cpu);
 		simulation_jeu(i,5,1,1,0,2,temps_cpu);
 		fprintf(f2,"%d %f\n",i,*temps_cpu);
-		simulation_jeu(i,5,1,1,0,3,temps_cpu);
+		/*simulation_jeu(i,5,1,1,0,3,temps_cpu);
+		fprintf(f3,"%d %f\n",i,*temps_cpu);*/
+	}
+	printf("\n");
+	fclose(f1); 
+	fclose(f2); 
+	/*fclose(f3);*/
+}
+void test_couleur(int n){
+
+	FILE *f1=fopen("couleurrec.txt","w");
+	FILE *f2=fopen("couleurimp.txt","w");
+	FILE *f3=fopen("couleurzsg.txt","w");
+	
+	int i;
+	
+	float *temps_cpu=(float *)malloc(sizeof(float));
+	printf("TEST COULEUR\n");
+	for(i=1;i<=n;i++){
+		printf("i=%d\n",i);
+		simulation_jeu(20,i,1,1,0,1,temps_cpu);
+		fprintf(f1,"%d %f\n",i,*temps_cpu);
+		simulation_jeu(20,i,1,1,0,2,temps_cpu);
+		fprintf(f2,"%d %f\n",i,*temps_cpu);
+		simulation_jeu(20,i,1,1,0,3,temps_cpu);
 		fprintf(f3,"%d %f\n",i,*temps_cpu);
 	}
 	printf("\n");
 	fclose(f1); 
 	fclose(f2); 
-	fclose(f3);	
+	fclose(f3);
 }
 
 
 int main(int argc,char**argv){
 	int dim;
+	int cl;
 	printf("Entrez une dimension maximale:");
 	scanf("%d",&dim);
 	test_dimension(dim);
+	printf("Entrez un nombre de couleurs maximal:");
+	scanf("%d",&cl);
+	test_couleur(cl);
 	return 0;
 }
+
+
 

@@ -14,12 +14,12 @@ typedef struct {
 } S_Zsg ;
 
 S_Zsg * init_Zsg(int dim,int nbcl);
+void detruit_Zsg (S_Zsg * Z);
 void ajoute_Zsg(S_Zsg * Z,int i,int j);
 void ajoute_Bordure(S_Zsg * Z,int i,int j,int cl);
 int appartient_Zsg(S_Zsg * Z,int i, int j);
 int appartient_Bordure(S_Zsg * Z,int i , int j,int cl);
 int agrandit_Zsg(int **M, S_Zsg * Z, int cl, int k, int l);
-int strequence_aleatoire_rapide(int ** M, Grille *G,S_Zsg * Z);
+int strequence_aleatoire_rapide (int **M, Grille *G, int dim, int nbcl, int aff);
 
 #endif  /* __S_ZSG__ */
-
