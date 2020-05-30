@@ -151,7 +151,7 @@ void mise_a_jour_bg(Graphe_zone* G, int** M, int nbCl){
   	for(i = 1; i < nbCl; i++)
       	clp = tab[i] > tab[clp] ? i : clp;
 
-  	changeCouleurZsg(G, M, clp);
+  	nouvelle_couleur(G, M, clp);
 
   	tmp1 = (G->mat[0][0])->sommet_adj;
   	elem = Zsg->cases;

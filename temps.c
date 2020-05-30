@@ -56,6 +56,12 @@ void simulation_jeu(int dim, int nbcl, int nivdif, int graine, int aff, int mode
 		strequence_aleatoire_rapide(M, G, dim, nbcl, aff);
 		temps_final=clock();
 	}
+	else if(mode==4){
+     		temps_initial=clock();
+		maxBordure(G, M, dim);
+		temps_final=clock();
+  	}
+
 			
 	*temps_cpu=temps_final-temps_initial;
 
@@ -72,7 +78,8 @@ void test_dimension(int n){
 	FILE *f1=fopen("dimrec.txt","w");
 	FILE *f2=fopen("dimimp.txt","w");
 	/*FILE *f3=fopen("dimzsg.txt","w");*/
-	
+	/*FILE *f4=fopen("dimMaxB.txt","w");*/	
+
 	int i;
 	
 	float *temps_cpu=(float *)malloc(sizeof(float));
@@ -85,17 +92,21 @@ void test_dimension(int n){
 		fprintf(f2,"%d %f\n",i,*temps_cpu);
 		/*simulation_jeu(i,5,1,1,0,3,temps_cpu);
 		fprintf(f3,"%d %f\n",i,*temps_cpu);*/
+		/*simulation_jeu(i,5,1,1,0,3,temps_cpu);
+		fprintf(f4,"%d %f\n",i,*temps_cpu);*/
 	}
 	printf("\n");
 	fclose(f1); 
 	fclose(f2); 
 	/*fclose(f3);*/
+	/*fclose(f4);*/
 }
 void test_couleur(int n){
 
 	FILE *f1=fopen("couleurrec.txt","w");
 	FILE *f2=fopen("couleurimp.txt","w");
 	/*FILE *f3=fopen("couleurzsg.txt","w");*/
+	/*FILE *f4=fopen("couleurMaxB.txt","w");*/
 	
 	int i;
 	
@@ -109,11 +120,14 @@ void test_couleur(int n){
 		fprintf(f2,"%d %f\n",i,*temps_cpu);
 		/*simulation_jeu(20,i,1,1,0,3,temps_cpu);
 		fprintf(f3,"%d %f\n",i,*temps_cpu);*/
+		/*simulation_jeu(20,i,1,1,0,2,temps_cpu);
+		fprintf(f4,"%d %f\n",i,*temps_cpu);*/
 	}
 	printf("\n");
 	fclose(f1); 
 	fclose(f2); 
 	/*fclose(f3);*/
+	/*fclose(f4);*/
 }
 
 
