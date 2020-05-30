@@ -7,6 +7,7 @@
 #include "Entete_Fonctions.h"
 #include "Liste_case.h"
 #include "S_Zsg.h"
+#include "Graphe_Zone.h"
  
  
 int main(int argc,char**argv){
@@ -74,7 +75,7 @@ ListeCase *l = malloc (sizeof(ListeCase));
 init_liste(l);
 int t=0;
 int choix;
-printf("Veuillez choisir la methode de parcours:\nPour la version recursive tapez 1, pour l'imperative tapez 2 pour l'acyclique tapez 3: ");
+printf("Veuillez choisir la methode de parcours:\nPour la version recursive tapez 1, pour l'imperative tapez 2, pour l'acyclique tapez 3, pour maxBordure tapez 4, pour Strategie_Largeur tapez 5: ");
 	
   scanf("%d", &choix);
   if(choix == 1){
@@ -87,8 +88,17 @@ printf("Veuillez choisir la methode de parcours:\nPour la version recursive tape
 	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",sequence_aleatoire_rec_imp(M, G, dim, nbcl, 1));
   }
   if(choix == 3){
-		printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",strequence_aleatoire_rapide(M, G, dim, nbcl, 1));
-	}
+	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",strequence_aleatoire_rapide(M, G, dim, nbcl, 1));
+  }
+  if(choix == 4){
+     	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",maxBordure(G, M, dim));
+  }
+  /*
+  if(choix == 5){
+	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",StrategieLargeur(G, M, nbcase));
+  }
+  */
+  
 
   temps_final = clock ();
   temps_cpu = (temps_final - temps_initial) * 1e-6;

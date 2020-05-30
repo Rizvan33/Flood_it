@@ -7,6 +7,8 @@
 #include "Entete_Fonctions.h"
 #include "Liste_case.h"
 #include "S_Zsg.h"
+#include "Graphe_Zone.h"
+
 void simulation_jeu(int dim, int nbcl, int nivdif, int graine, int aff, int mode,float *temps_cpu ){
 	clock_t
 		temps_initial, // Temps initial en micro-secondes
@@ -49,11 +51,11 @@ void simulation_jeu(int dim, int nbcl, int nivdif, int graine, int aff, int mode
 		sequence_aleatoire_rec_imp(M, G, dim, nbcl, aff);
 		temps_final=clock();
 	}
-	/*else if(mode==3){
+	else if(mode==3){
 		temps_initial=clock();
 		strequence_aleatoire_rapide(M, G, dim, nbcl, aff);
 		temps_final=clock();
-	}*/
+	}
 			
 	*temps_cpu=temps_final-temps_initial;
 
@@ -93,7 +95,7 @@ void test_couleur(int n){
 
 	FILE *f1=fopen("couleurrec.txt","w");
 	FILE *f2=fopen("couleurimp.txt","w");
-	FILE *f3=fopen("couleurzsg.txt","w");
+	/*FILE *f3=fopen("couleurzsg.txt","w");*/
 	
 	int i;
 	
@@ -105,13 +107,13 @@ void test_couleur(int n){
 		fprintf(f1,"%d %f\n",i,*temps_cpu);
 		simulation_jeu(20,i,1,1,0,2,temps_cpu);
 		fprintf(f2,"%d %f\n",i,*temps_cpu);
-		simulation_jeu(20,i,1,1,0,3,temps_cpu);
-		fprintf(f3,"%d %f\n",i,*temps_cpu);
+		/*simulation_jeu(20,i,1,1,0,3,temps_cpu);
+		fprintf(f3,"%d %f\n",i,*temps_cpu);*/
 	}
 	printf("\n");
 	fclose(f1); 
 	fclose(f2); 
-	fclose(f3);
+	/*fclose(f3);*/
 }
 
 
