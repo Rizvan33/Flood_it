@@ -52,16 +52,16 @@ void ajoute_voisin(Sommet* s1, Sommet* s2);
 int adjacent(Sommet* s1, Sommet* s2);
 
 /* va creer le graphe tout entier */
-void cree_graphe_zone(int** M, int nbCases, Graphe_zone* G);
+void cree_graphe_zone(int** M, int dim, Graphe_zone* G);
 
 /* fonction d’affichage du graphe */ 
-void affichage_graphe(Graphe_zone* G, int nbCases);
+void affichage_graphe(Graphe_zone* G, int dim);
 
 void nouvelle_couleur(Graphe_zone* G, int** M,  int cl);
 
 void mise_a_jour_bg(Graphe_zone* G, int** M, int nbCl);
 
-int maxBordure(Grille* Grille, int** M, int nbCases);
+int maxBordure(Grille* Grille, int** M, int dim);
 
 
 #endif  /* GRAPHE_ZONE_H */

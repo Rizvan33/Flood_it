@@ -59,15 +59,15 @@ int adjacent(Sommet* s1, Sommet* s2){
 	return bool;
 }
 
-void cree_graphe_zone(int** M, int nbCases, Graphe_zone* G){
+void cree_graphe_zone(int** M, int dim, Graphe_zone* G){
 	int i, j;
 	Sommet* s1 = NULL;
 	ListeCase L = malloc(sizeof(ListeCase));
 	init_liste(&L);
 	int taille=0;
 	// allocation des sommets de G
-  	for (i=0; i<nbCases; i++){
-    		for (j=0; j<nbCases; j++){
+  	for (i=0; i<dim; i++){
+    		for (j=0; j<dim; j++){
       		if (G->mat[i][j] == NULL) {
 				// initalisation d'un sommet vide
 				s1 = (Sommet *) malloc(sizeof(Sommet)); 
@@ -80,13 +80,13 @@ void cree_graphe_zone(int** M, int nbCases, Graphe_zone* G){
 				(G->nbsom)++;
 				G->som = ajoute_liste_sommet(s1, G->som);
 				//pour remplir les sommets
-				trouve_zone_rec(M,nbCases, i, j, &taille, &(s1->cases));
+				trouve_zone_rec(M,dim, i, j, &taille, &(s1->cases));
 			}
 		}
 	}
 	Sommet *s2 = NULL;
-	for(i=0; i < nbCases; i++){
-    		for(j=0; j < (nbCases - 1); j++) {
+	for(i=0; i < dim; i++){
+    		for(j=0; j < (dim - 1); j++) {
            	s1 = G->mat[i][j];
       		s2 = G->mat[i][j+1];
       		// si les sommets sont adjacents, on continu
@@ -98,12 +98,12 @@ void cree_graphe_zone(int** M, int nbCases, Graphe_zone* G){
 	}
 }
 
-void affichage_graphe(Graphe_zone* G, int nbCases){
+void affichage_graphe(Graphe_zone* G, int dim){
 	int i=0, j=0;
 	Cellule_som* parcours; /*sert a parcourir la liste des sommets */
 
-	for(i=0; i<nbCases; i++){
-    		for(j=0; j<nbCases; j++) {
+	for(i=0; i<dim; i++){
+    		for(j=0; j<dim; j++) {
       		parcours = G->mat[i][j]->sommet_adj;
       	 	printf("Dans le sommet [%d][%d], on a les noeuds ", i, j);
       		while (parcours) {
@@ -191,22 +191,22 @@ void mise_a_jour_bg(Graphe_zone* G, int** M, int nbCl){
   	}
 }
 
-int maxBordure(Grille* Grille, int** M, int nbCases){
+int maxBordure(Grille* Grille, int** M, int dim){
 	int i , j, cpt = 0;
 	Graphe_zone G;
 	G.nbsom = 0;
 	G.som = NULL;
-	G.mat = (Sommet ***) malloc(sizeof(Sommet**)*nbCases);
+	G.mat = (Sommet ***) malloc(sizeof(Sommet**)*dim);
 	assert(G.mat != NULL);
 	
-	for(i = 0; i < nbCases; i++) {
-		G.mat[i] = (Sommet **)malloc(sizeof(Sommet*)*nbCases);
+	for(i = 0; i < dim; i++) {
+		G.mat[i] = (Sommet **)malloc(sizeof(Sommet*)*dim);
 	  	assert(G.mat[i]);
-	  	for(j = 0; i < nbCases; j++)
+	  	for(j = 0; i < dim; j++)
 	    		G.mat[i][j] = NULL;
 	}
 	
-	cree_graphe_zone(M, nbCases, &G);
+	cree_graphe_zone(M, dim, &G);
 
 	while(G.nbsom > 0) {
 		mise_a_jour_bg(&G, M, Grille->nbcl);
