@@ -15,11 +15,12 @@ Cellule_som* ajoute_liste_sommet(Sommet* sommet, Cellule_som* cell_som){
 }
 
 void detruit_liste_sommet(Cellule_som* cell_som){
-	Cellule_som* tmp = cell_som;
-	while (tmp){
-		cell_som = tmp->suiv;
-		free(tmp);
-		tmp = cell_som;
+	Cellule_som* tmp1=cell_som;
+	Cellule_som* tmp2=NULL;
+	while (tmp1){
+		tmp2=tmp1;
+		tmp1=tmp1->suiv;
+		free(tmp2);
 	}
 }
 
@@ -79,7 +80,7 @@ void cree_graphe_zone(int** M, int nbCases, Graphe_zone* G){
 				(G->nbsom)++;
 				G->som = ajoute_liste_sommet(s1, G->som);
 				//pour remplir les sommets
-				trouve_zone_imp(M,nbCases, i, j, &taille, &(s1->cases));
+				trouve_zone_rec(M,nbCases, i, j, &taille, &(s1->cases));
 			}
 		}
 	}
