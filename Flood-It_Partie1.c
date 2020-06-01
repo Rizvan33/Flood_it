@@ -92,11 +92,11 @@ printf("Veuillez choisir la methode de parcours:\nPour la version recursive tape
 	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",strequence_aleatoire_rapide(M, G, dim, nbcl, 1));
   }
   if(choix == 4){
-     	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",maxBordure(G, M, dim));
+     	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",maxBordure(G, M, dim, nbcl));
   }
   /*
   if(choix == 5){
-	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",StrategieLargeur(G, M, nbcase));
+	printf ("%d changements de couleurs sont necessaires pour gagner le jeu\n",StrategieLargeur(G, M, dim, nbcl));
   }
   */
   

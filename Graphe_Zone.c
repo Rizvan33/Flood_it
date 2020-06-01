@@ -59,43 +59,56 @@ int adjacent(Sommet* s1, Sommet* s2){
 	return bool;
 }
 
-void cree_graphe_zone(int** M, int dim, Graphe_zone* G){
-	int i, j;
-	Sommet* s1 = NULL;
-	ListeCase L = malloc(sizeof(ListeCase));
-	init_liste(&L);
-	int taille=0;
-	// allocation des sommets de G
-  	for (i=0; i<dim; i++){
-    		for (j=0; j<dim; j++){
-      		if (G->mat[i][j] == NULL) {
-				// initalisation d'un sommet vide
-				s1 = (Sommet *) malloc(sizeof(Sommet)); 
-				s1->nbcase_som = 0;
-				s1->cases = L;
-				s1->cases->i = i;	
-				s1->cases->j = j;
-				s1->sommet_adj = NULL;
-				G->mat[i][j] = s1;
-				(G->nbsom)++;
-				G->som = ajoute_liste_sommet(s1, G->som);
-				//pour remplir les sommets
-				trouve_zone_rec(M,dim, i, j, &taille, &(s1->cases));
-			}
+Graphe_zone* cree_graphe_zone(int **M, int dim, int nbcl){
+	int i,j;	
+	Graphe_zone *G = (Graphe_zone*) malloc(sizeof(Graphe_zone));
+	G->nbsom=0;
+	G->som=NULL;	
+	G->mat = (Sommet ***)malloc(sizeof(Sommet **)*dim);
+	assert(G->mat != NULL);
+
+	for(i=0;i<dim;i++){
+		G->mat[i] = (Sommet **) malloc(sizeof(Sommet *)*dim);
+		assert(G->mat[i]);
+		for(j=0;j<dim;j++){
+			G->mat[i][j] = NULL;
 		}
 	}
-	Sommet *s2 = NULL;
-	for(i=0; i < dim; i++){
-    		for(j=0; j < (dim - 1); j++) {
-           	s1 = G->mat[i][j];
+	
+	for(i=0;i<dim;i++){
+		for(j=0;j<dim;j++){	
+			Sommet* s = (Sommet *)malloc(sizeof(Sommet));
+			s->num=G->nbsom;
+			s->cl = M[i][j];
+			s->sommet_adj=NULL;
+			
+			init_liste(&(s->cases));
+			int taille=0;
+			trouve_zone_rec(M,dim,i,j,&taille,&(s->cases));
+
+			while(s->cases!=NULL){
+				G->mat[s->cases->i][s->cases->j]=s;
+				M[s->cases->i][s->cases->j]=s->cl;
+				s->cases=s->cases->suiv;
+			}
+			
+			s->nbcase_som=taille;
+			ajoute_liste_sommet(s, G->som);
+			(G->nbsom)++;
+		}
+	}
+	Sommet *s1 = NULL, *s2 = NULL;
+	for (i=0; i < dim; i++){
+    		for(j=0; j < (dim - 1); j++){
+      		s1 = G->mat[i][j];
       		s2 = G->mat[i][j+1];
-      		// si les sommets sont adjacents, on continu
-      		if (s1 == s2 || adjacent(s1, s2) != 0)
+      		if (s1 == s2 || adjacent(s1, s2) != 0){
 				continue;
-      // Si les sommets sont differents et qu'ils ne sont pas deja adjacents
+			}
       		ajoute_voisin(s1, s2);
     		}
 	}
+	return G;	
 }
 
 void affichage_graphe(Graphe_zone* G, int dim){
@@ -191,33 +204,68 @@ void mise_a_jour_bg(Graphe_zone* G, int** M, int nbCl){
   	}
 }
 
-int maxBordure(Grille* Grille, int** M, int dim){
-	int i , j, cpt = 0;
-	Graphe_zone G;
-	G.nbsom = 0;
-	G.som = NULL;
-	G.mat = (Sommet ***) malloc(sizeof(Sommet**)*dim);
-	assert(G.mat != NULL);
-	
-	for(i = 0; i < dim; i++) {
-		G.mat[i] = (Sommet **)malloc(sizeof(Sommet*)*dim);
-	  	assert(G.mat[i]);
-	  	for(j = 0; i < dim; j++)
-	    		G.mat[i][j] = NULL;
-	}
-	
-	cree_graphe_zone(M, dim, &G);
+int maxBordure(Grille* Grille, int** M, int dim, int nbcl){
+	int cpt = 0;
+		
+	Graphe_zone* G=cree_graphe_zone(M, dim, nbcl);
 
-	while(G.nbsom > 0) {
-		mise_a_jour_bg(&G, M, Grille->nbcl);
+	while(G->nbsom > 0) {
+		mise_a_jour_bg(G, M, Grille->nbcl);
 		cpt++;
 	}
 
 	return cpt;
 }
 
+/*
+Cellule_som *Chemin_court(Graphe_zone *G, int dim){
+  	Sommet* zsg = G->mat[0][0];
+  	Sommet* zid = G->mat[dim][dim];//zone inferieure droite 	zsg->distance = 9999;
+	zsg->pere=NULL;
+  	Cellule_som *chemin = ajoute_liste_sommet(zsg, NULL);
+	
+	if(zsg == zid){
+		zsg->marque=0;
+		zid->marque=0;
+		zsg->distance=0;
+		return ajoute_liste_sommet(zid, chemin);
+	}
+
+  	if(adjacent(zsg, zid)== 1) {
+		zsg->marque=0;
+		zid->marque=1;
+		zid->pere=zsg;
+		zsg->distance=1;
+      	return ajoute_liste_sommet(zid, chemin);
+    	}
+	while(zsg->sommet_adj){
+		if (zsg->sommet_adj->sommet->marque == 0) {
+
+	}
+	
+		return chemin;
+}
+  	
+
+int StrategieLargeur(Grille* Grille, int **M, int dim, int nbcl){
+	int cpt=0;
+	Cellule_som* chemin = NULL;
+
+	Graphe_zone* G=cree_graphe_zone(M, dim, nbcl);
+	
+	chemin=Chemin_court(G,dim);
+
+	for(i=0;chemin!=NULL;i++){
+		mise_a_jour_bg(G, M, (chemin->sommet)->cl));
+	} 
+
+	cpt += maxBordure(Grille, M, dim, nbcl);
+	
+	return cpt;
+}
 
 
+*/
 
 
 
